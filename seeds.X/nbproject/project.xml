@@ -10,8 +10,7 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>../../OneDrive/Desktop/ECE 118/ece118_base</sourceRootElem>
-                <sourceRootElem>../../OneDrive/Desktop/ECE 118/base_templae 2/ece118_template</sourceRootElem>
-                <sourceRootElem>../../OneDrive/Desktop/ECE 118/base_templae 2/ece118_base</sourceRootElem>
+                <sourceRootElem>../../OneDrive/Desktop/ECE 118/base_templae 2</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
