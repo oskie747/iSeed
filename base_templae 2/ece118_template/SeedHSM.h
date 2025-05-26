@@ -17,15 +17,15 @@
  * Updated on 16/Sep/2013
  */
 
-#ifndef HSM_Template_H  // <- This should be changed to your own guard on both
-#define HSM_Template_H  //    of these lines
+#ifndef HSM_Seed_H  // <- This should be changed to your own guard on both
+#define HSM_Seed_H  //    of these lines
 
 
 /*******************************************************************************
  * PUBLIC #INCLUDES                                                            *
  ******************************************************************************/
 
-#include "ES_Configure.h"   // defines ES_Event, INIT_EVENT, ENTRY_EVENT, and EXIT_EVENT
+#include "SeedES_Configure.h"   // defines ES_Event, INIT_EVENT, ENTRY_EVENT, and EXIT_EVENT
 
 /*******************************************************************************
  * PUBLIC #DEFINES                                                             *
@@ -51,7 +51,7 @@
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTemplateHSM(uint8_t Priority);
+uint8_t InitSeedHSM(uint8_t Priority);
 
 
 /**
@@ -63,7 +63,7 @@ uint8_t InitTemplateHSM(uint8_t Priority);
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostTemplateHSM(ES_Event ThisEvent);
+uint8_t PostSeedHSM(ES_Event ThisEvent);
 
 
 
@@ -83,7 +83,7 @@ uint8_t PostTemplateHSM(ES_Event ThisEvent);
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunTemplateHSM(ES_Event ThisEvent);
+ES_Event RunSeedHSM(ES_Event ThisEvent);
 
 #endif /* HSM_Template_H */
 

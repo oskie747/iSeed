@@ -20,10 +20,11 @@
 
 #include "BOARD.h"
 #include "AD.h"
-#include "ES_Configure.h"
+#include "SeedES_Configure.h"
 #include "ES_Framework.h"
 #include "SeedService.h"
 #include <stdio.h>
+#include "IO_Ports.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -59,7 +60,7 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTemplateService(uint8_t Priority)
+uint8_t InitSeedService(uint8_t Priority)
 {
     ES_Event ThisEvent;
 
@@ -87,7 +88,7 @@ uint8_t InitTemplateService(uint8_t Priority)
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostTemplateService(ES_Event ThisEvent)
+uint8_t PostSeedService(ES_Event ThisEvent)
 {
     return ES_PostToService(MyPriority, ThisEvent);
 }
@@ -101,7 +102,7 @@ uint8_t PostTemplateService(ES_Event ThisEvent)
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunTemplateService(ES_Event ThisEvent)
+ES_Event RunSeedService(ES_Event ThisEvent)
 {
     ES_Event ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
@@ -109,9 +110,9 @@ ES_Event RunTemplateService(ES_Event ThisEvent)
     /********************************************
      in here you write your service code
      *******************************************/
-    static ES_EventTyp_t lastEvent = BATTERY_DISCONNECTED;
+    static ES_EventTyp_t lastEvent = ir1_off;
     ES_EventTyp_t curEvent;
-    uint16_t batVoltage = AD_ReadADPin(BAT_VOLTAGE); // read the battery voltage
+    uint16_t ir1Val = AD_ReadADPin(AD_PORTV6); // read the battery voltage
 
     switch (ThisEvent.EventType) {
     case ES_INIT:
@@ -122,17 +123,17 @@ ES_Event RunTemplateService(ES_Event ThisEvent)
         break;
 
     case ES_TIMEOUT:
-        if (batVoltage > BATTERY_DISCONNECT_THRESHOLD) { // is battery connected?
-            curEvent = BATTERY_CONNECTED;
+        if (ir1Val > 500) { // is battery connected?
+            curEvent = ir1_off;
         } else {
-            curEvent = BATTERY_DISCONNECTED;
+            curEvent = ir1_on;
         }
         if (curEvent != lastEvent) { // check for change from last time
             ReturnEvent.EventType = curEvent;
-            ReturnEvent.EventParam = batVoltage;
+            ReturnEvent.EventParam = ir1Val;
             lastEvent = curEvent; // update history
 #ifndef SIMPLESERVICE_TEST           // keep this as is for test harness
-            PostTemplateService(ReturnEvent); // Change it to your target service's post function
+            PostSeedService(ReturnEvent); // Change it to your target service's post function
 #else
             PostTemplateService(ReturnEvent);
 #endif   

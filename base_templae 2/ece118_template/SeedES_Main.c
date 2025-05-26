@@ -1,25 +1,23 @@
 #include <BOARD.h>
 #include <xc.h>
 #include <stdio.h>
-#include "ES_Configure.h"
+#include "SeedES_Configure.h"
 #include "ES_Framework.h"
+#include "iSeed.h"
 
 void main(void)
 {
     ES_Return_t ErrorType;
 
     BOARD_Init();
-//    AD_Init();
-//    Stepper_Init();
-//    PWM_Init();
-//    RC_Init();
-
+    
     printf("Starting ES Framework Template\r\n");
     printf("using the 2nd Generation Events & Services Framework\r\n");
 
-
+    
     // Your hardware initialization function calls go here
-
+    Seed_Init();
+    
     // now initialize the Events and Services Framework and start it running
     ErrorType = ES_Initialize();
     if (ErrorType == Success) {

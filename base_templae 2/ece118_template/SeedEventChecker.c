@@ -26,7 +26,7 @@
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
 
-#include "ES_Configure.h"
+#include "SeedES_Configure.h"
 #include "SeedEventChecker.h"
 #include "ES_Events.h"
 #include "serial.h"
@@ -34,6 +34,8 @@
 #include "Stepper.h"
 #include "pwm.h"
 #include "iSeed.h"
+#include "SeedService.h"
+#include "ES_Timers.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -44,7 +46,7 @@
  * EVENTCHECKER_TEST SPECIFIC CODE                                             *
  ******************************************************************************/
 
-#define EVENTCHECKER_TEST
+//#define EVENTCHECKER_TEST
 #ifdef EVENTCHECKER_TEST
 #include <stdio.h>
 #define SaveEvent(x) do {eventName=__func__; storedEvent=x;} while (0)
@@ -85,42 +87,44 @@ static ES_Event storedEvent;
  * @note Use this code as a template for your other event checkers, and modify as necessary.
  * @author Gabriel H Elkaim, 2013.09.27 09:18
  * @modified Gabriel H Elkaim/Max Dunne, 2016.09.12 20:08 */
-uint8_t TemplateCheckBattery(void) {
-    static ES_EventTyp_t lastEvent = BATTERY_DISCONNECTED;
-    ES_EventTyp_t curEvent;
-    ES_Event thisEvent;
-    uint8_t returnVal = FALSE;
-    uint16_t batVoltage = AD_ReadADPin(BAT_VOLTAGE); // read the battery voltage
-
-    if (batVoltage > BATTERY_DISCONNECT_THRESHOLD) { // is battery connected?
-        curEvent = BATTERY_CONNECTED;
-    } else {
-        curEvent = BATTERY_DISCONNECTED;
-    }
-    if (curEvent != lastEvent) { // check for change from last time
-        thisEvent.EventType = curEvent;
-        thisEvent.EventParam = batVoltage;
-        returnVal = TRUE;
-        lastEvent = curEvent; // update history
-#ifndef EVENTCHECKER_TEST           // keep this as is for test harness
-        PostTemplateService(thisEvent); // Change it to your target service's post function
-#else
-        SaveEvent(thisEvent);
-#endif   
-    }
-    return (returnVal);
-}
+//uint8_t TemplateCheckBattery(void) {
+//    static ES_EventTyp_t lastEvent = BATTERY_DISCONNECTED;
+//    ES_EventTyp_t curEvent;
+//    ES_Event thisEvent;
+//    uint8_t returnVal = FALSE;
+//    uint16_t batVoltage = AD_ReadADPin(BAT_VOLTAGE); // read the battery voltage
+//
+//    if (batVoltage > BATTERY_DISCONNECT_THRESHOLD) { // is battery connected?
+//        curEvent = BATTERY_CONNECTED;
+//    } else {
+//        curEvent = BATTERY_DISCONNECTED;
+//    }
+//    if (curEvent != lastEvent) { // check for change from last time
+//        thisEvent.EventType = curEvent;
+//        thisEvent.EventParam = batVoltage;
+//        returnVal = TRUE;
+//        lastEvent = curEvent; // update history
+//#ifndef EVENTCHECKER_TEST           // keep this as is for test harness
+//        PostSeedService(thisEvent); // Change it to your target service's post function
+//#else
+//        SaveEvent(thisEvent);
+//#endif   
+//    }
+//    return (returnVal);
+//}
 
 uint8_t SeedSoilCheck(void) {
     static ES_EventTyp_t lastEvent = no_dirt;
     ES_EventTyp_t curEvent;
     ES_Event thisEvent;
     uint8_t returnVal = FALSE;
-    uint16_t soilVal = AD_ReadADPin(AD_PORTV5);  // read soil sensor data
+    uint16_t soilVal = Seed_Soil();  // read soil sensor data
 
     if (soilVal >= 700) { // is it in dirt?
+//        printf("\nhello?");
         curEvent = no_dirt;
     } else {
+//        printf("\ngoodbye?");
         curEvent = yo_dirt;
     }
     if (curEvent != lastEvent) { // check for change from last time
@@ -129,7 +133,7 @@ uint8_t SeedSoilCheck(void) {
         returnVal = TRUE;
         lastEvent = curEvent; // update history
 #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
-        PostTemplateService(thisEvent); // Change it to your target service's post function
+        PostSeedHSM(thisEvent); //CRITICALLY IMPORTANT TO HAVE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #else
         SaveEvent(thisEvent);
 #endif   
@@ -142,12 +146,13 @@ uint8_t SeedCheckIR1(void) {
     ES_EventTyp_t curEvent;
     ES_Event thisEvent;
     uint8_t returnVal = FALSE;
-    uint16_t ir1Val = AD_ReadADPin(AD_PORTV6); // read IR sensor input
+    uint16_t ir1Val = Seed_IR_ONE(); // read IR sensor input
 
     if (ir1Val > 500) { // is it off
+//        printf("\nhewwo?");
         curEvent = ir1_off;
     } else {
-//        printf("\nbruh: %d", ir1Val);
+//        printf("\ngowodbye?");
         curEvent = ir1_on;
     }
     if (curEvent != lastEvent) { // check for change from last time
@@ -156,7 +161,7 @@ uint8_t SeedCheckIR1(void) {
         returnVal = TRUE;
         lastEvent = curEvent; // update history
 #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
-        PostTemplateService(thisEvent); // Change it to your target service's post function
+        PostSeedHSM(thisEvent);
 #else
         SaveEvent(thisEvent);
 #endif   
@@ -169,11 +174,13 @@ uint8_t SeedCheckIR2(void) {
     ES_EventTyp_t curEvent;
     ES_Event thisEvent;
     uint8_t returnVal = FALSE;
-    uint16_t ir2Val = AD_ReadADPin(AD_PORTV7);  // read IR sensor input
+    uint16_t ir2Val = Seed_IR_TWO();  // read IR sensor input
 
     if (ir2Val > 500) { // is it off
+//        printf("\nholla?");
         curEvent = ir2_off;
     } else {
+//        printf("\ngadbuy?");
 //        printf("\n      bruh: %d", ir2Val);
         curEvent = ir2_on;
     }
@@ -183,7 +190,7 @@ uint8_t SeedCheckIR2(void) {
         returnVal = TRUE;
         lastEvent = curEvent; // update history
 #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
-        PostTemplateService(thisEvent); // Change it to your target service's post function
+        PostSeedHSM(thisEvent);
 #else
         SaveEvent(thisEvent);
 #endif   
@@ -209,7 +216,7 @@ uint8_t SeedStepsRemaining(void) {
         returnVal = TRUE;
         lastEvent = curEvent; // update history
 #ifndef EVENTCHECKER_TEST           // keep this as is for test harness
-        PostTemplateService(thisEvent); // Change it to your target service's post function
+        PostSeedHSM(thisEvent);
 #else
         SaveEvent(thisEvent);
 #endif   
@@ -277,7 +284,9 @@ void main(void) {
 
             }
         }
-        Seed_MotorSpeed();
+        Seed_Motor1Speed();
+        Seed_Motor2Speed();
+        
     }
 }
 

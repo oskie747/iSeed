@@ -22,7 +22,7 @@
  * PUBLIC #INCLUDES                                                            *
  ******************************************************************************/
 
-#include "ES_Configure.h"   // defines ES_Event, INIT_EVENT, ENTRY_EVENT, and EXIT_EVENT
+#include "SeedES_Configure.h"   // defines ES_Event, INIT_EVENT, ENTRY_EVENT, and EXIT_EVENT
 
 /*******************************************************************************
  * PUBLIC #DEFINES                                                             *
@@ -49,7 +49,7 @@
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTemplateService(uint8_t Priority);
+uint8_t InitSeedService(uint8_t Priority);
 
 /**
  * @Function PostTemplateService(ES_Event ThisEvent)
@@ -60,7 +60,7 @@ uint8_t InitTemplateService(uint8_t Priority);
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostTemplateService(ES_Event ThisEvent);
+uint8_t PostSeedService(ES_Event ThisEvent);
 
 /**
  * @Function RunTemplateService(ES_Event ThisEvent)
@@ -71,7 +71,7 @@ uint8_t PostTemplateService(ES_Event ThisEvent);
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunTemplateService(ES_Event ThisEvent);
+ES_Event RunSeedService(ES_Event ThisEvent);
 
 
 

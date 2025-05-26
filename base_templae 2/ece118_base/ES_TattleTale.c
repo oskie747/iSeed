@@ -23,7 +23,7 @@
 
 #include <BOARD.h>
 #include <xc.h>
-#include "ES_Configure.h"
+#include "SeedES_Configure.h"
 #include "ES_Framework.h"
 #include "ES_TattleTale.h"
 #include "serial.h"

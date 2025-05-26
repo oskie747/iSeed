@@ -28,15 +28,22 @@
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
 
-#include "ES_Configure.h"
+#include "SeedES_Configure.h"
 #include "ES_Framework.h"
-#include "BOARD.h"
+#include <BOARD.h>
+
 #include "SeedHSM.h"
 #include "SeedSubHSM.h" //#include all sub state machines called
+#include "ExtendSubHSM.h"
+
+#include "iSeed.h"
+#include "stdio.h"
+#include "stdlib.h"
 /*******************************************************************************
  * PRIVATE #DEFINES                                                            *
  ******************************************************************************/
 //Include any defines you need to do
+
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -45,12 +52,16 @@
 
 typedef enum {
     InitPState,
-    FirstState,
+    LINE_FOLLOW,
+    PLANTER,
+    DONE
 } TemplateHSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
-	"FirstState",
+	"LINE_FOLLOW",
+    "PLANTER",
+    "DONE"
 };
 
 
@@ -60,8 +71,11 @@ static const char *StateNames[] = {
 /* Prototypes for private functions for this machine. They should be functions
    relevant to the behavior of this state machine
    Example: char RunAway(uint_8 seconds);*/
+void Seed_MotorSpeed(void);
+void Seed_MotorStop(void);
+
 /*******************************************************************************
- * PRIVATE MODULE VARIABLES                                                            *
+ * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
@@ -84,7 +98,7 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTemplateHSM(uint8_t Priority)
+uint8_t InitSeedHSM(uint8_t Priority)
 {
     MyPriority = Priority;
     // put us into the Initial PseudoState
@@ -106,7 +120,7 @@ uint8_t InitTemplateHSM(uint8_t Priority)
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostTemplateHSM(ES_Event ThisEvent)
+uint8_t PostSeedHSM(ES_Event ThisEvent)
 {
     return ES_PostToService(MyPriority, ThisEvent);
 }
@@ -126,7 +140,7 @@ uint8_t PostTemplateHSM(ES_Event ThisEvent)
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunTemplateHSM(ES_Event ThisEvent)
+ES_Event RunSeedHSM(ES_Event ThisEvent)
 {
     uint8_t makeTransition = FALSE; // use to flag transition
     TemplateHSMState_t nextState; // <- change type to correct enum
@@ -141,35 +155,91 @@ ES_Event RunTemplateHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
-            InitTemplateSubHSM();
+            
+//            InitExtendSubHSM();
+//            InitSeedSubHSM();
+            
             // now put the machine into the actual initial state
-            nextState = FirstState;
+            nextState = LINE_FOLLOW;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             ;
         }
         break;
 
-    case FirstState: // in the first state, replace this with correct names
-        // run sub-state machine for this state
-        //NOTE: the SubState Machine runs and responds to events before anything in the this
-        //state machine does
-        ThisEvent = RunTemplateSubHSM(ThisEvent);
-        switch (ThisEvent.EventType) {
-        case ES_NO_EVENT:
-        default:
-            break;
+    case LINE_FOLLOW:
+        //while in this state MOVE until a planter is reached, or the line is gone
+        printf("\n  LINE FOLLOW");
+        Seed_MotorSpeed();
+        
+//        ThisEvent = RunExtendSubHSM(ThisEvent);
+        
+        if (ThisEvent.EventType == yo_dirt){ //test case to turn everything "off"
+            //THIS OCCURS WHEN THE LINE IS NO MORE
+            Seed_MotorStop();
+            nextState = DONE;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        else if (ThisEvent.EventType == ir1_on && ThisEvent.EventType == ir2_off){
+            //THIS OCCURS WHEN A PLANTER IS REACHED
+            Seed_MotorStop();
+//            InitExtendSubHSM();
+            nextState = PLANTER;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
+    
+    case PLANTER:
+        //while in this state, STOP and go into subHSM
+        printf("\n      PLANTER");
+        Seed_MotorStop();
+        
+//        ThisEvent = RunExtendSubHSM(ThisEvent);
+        
+        if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == ColumnDone){
+            nextState = LINE_FOLLOW;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        
+//        switch (ThisEvent.EventType) {
+//        case ES_NO_EVENT:
+//        default:
+//            break;
+//        }
+        break;
+    
+    case DONE:
+        printf("\nI CAN NEVER LEAVE HERE");
+        Seed_MotorStop();
+        
+//        ThisEvent = RunTemplateSubHSM(ThisEvent);
+//        if (ThisEvent.EventType == ir1_off){
+//            nextState = LINE_FOLLOW;
+//            makeTransition = TRUE;
+//            ThisEvent.EventType = ES_NO_EVENT;
+//        }
+        
+//        switch (ThisEvent.EventType) {
+//        case ES_NO_EVENT:
+//        default:
+//            break;
+//        }
+        break;
+    
+        
+        
     default: // all unhandled states fall into here
         break;
     } // end switch on Current State
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunTemplateHSM(EXIT_EVENT); // <- rename to your own Run function
+        RunSeedHSM(EXIT_EVENT); // <- rename to your own Run function
         CurrentState = nextState;
-        RunTemplateHSM(ENTRY_EVENT); // <- rename to your own Run function
+        RunSeedHSM(ENTRY_EVENT); // <- rename to your own Run function
     }
 
     ES_Tail(); // trace call stack end
@@ -180,3 +250,12 @@ ES_Event RunTemplateHSM(ES_Event ThisEvent)
 /*******************************************************************************
  * PRIVATE FUNCTIONS                                                           *
  ******************************************************************************/
+void Seed_MotorSpeed(void){
+    Seed_Motor1Speed();
+    Seed_Motor2Speed();
+}
+
+void Seed_MotorStop(void){
+    Seed_Motor1Stop();
+    Seed_Motor2Stop();
+}

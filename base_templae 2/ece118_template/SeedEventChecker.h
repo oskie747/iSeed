@@ -26,7 +26,7 @@
  * PUBLIC #INCLUDES                                                            *
  ******************************************************************************/
 
-#include "ES_Configure.h"   // defines ES_Event, INIT_EVENT, ENTRY_EVENT, and EXIT_EVENT
+#include "SeedES_Configure.h"   // defines ES_Event, INIT_EVENT, ENTRY_EVENT, and EXIT_EVENT
 #include "BOARD.h"
 
 /*******************************************************************************

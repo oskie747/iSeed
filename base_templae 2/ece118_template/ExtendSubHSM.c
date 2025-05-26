@@ -33,22 +33,25 @@
 #include "SeedHSM.h"
 #include "ExtendSubHSM.h"
 #include "SeedSubHSM.h"
+#include "iSeed.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 typedef enum {
     InitPSubState,
-    ARM_REST,
-    ARM_DOWN,
-    SEED
+    ROW1,
+            ROW2,
+            ROW3,
+            RESET
 } TemplateSubHSMState_t;
 
 static const char *StateNames[] = {
     "InitPSubState",
-    "ARM_REST",
-    "ARM_DOWN",
-    "SEED"
+    "RO11",
+    "ROW2",
+    "ROW3",
+    "RESET"
 };
 
 
@@ -59,7 +62,7 @@ static const char *StateNames[] = {
    relevant to the behavior of this state machine */
 
 /*******************************************************************************
- * PRIVATE MODULE VARIABLES                                                            *
+ * PRIVATE MODULE VARIABLES                                                    *
  ******************************************************************************/
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
@@ -82,12 +85,12 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitSeedSubHSM(void)
+uint8_t InitExtendSubHSM(void)
 {
     ES_Event returnEvent;
 
     CurrentState = InitPSubState;
-    returnEvent = RunSeedSubHSM(INIT_EVENT);
+    returnEvent = RunExtendSubHSM(INIT_EVENT);
     if (returnEvent.EventType == ES_NO_EVENT) {
         return TRUE;
     }
@@ -109,7 +112,7 @@ uint8_t InitSeedSubHSM(void)
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunSeedSubHSM(ES_Event ThisEvent)
+ES_Event RunExtendSubHSM(ES_Event ThisEvent)
 {
     uint8_t makeTransition = FALSE; // use to flag transition
     TemplateSubHSMState_t nextState; // <- change type to correct enum
@@ -123,71 +126,95 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-            ES_Timer_InitTimer(lowerTimer, 600);
+            
+            ES_Timer_InitTimer(EntryTimer, 400);
+//            InitSeedSubHSM();
+            
             // now put the machine into the actual initial state
-            nextState = ARM_REST;
+            nextState = ROW1;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
 
-    case ARM_REST: // in the first state, replace this with correct names
+    case ROW1: // in the first state, replace this with correct names
         if (ThisEvent.EventType == ES_ENTRY){
-            Seed_RaiseArm();
-            Seed_PullSeed();
+            printf("\n  I AM ON ROW NUMBA 1");
         }
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == lowerTimer){
-            nextState = ARM_DOWN;
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == EntryTimer){
+
+            printf("\n  TIME TO SEED 1");
+//            InitSeedSubHSM();
+
+        }
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+            nextState = ROW2;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        
+        break;
+    
+    case ROW2: 
+        if (ThisEvent.EventType == ES_ENTRY){
+            Seed_ExtendArm();
+            printf("\n      I AM ON ROW NUMAB 2");
+        }
+        else if (ThisEvent.EventType == still){
+
+            printf("\n      TIME TO SEED 2");
+//            InitSeedSubHSM();
+
+        }
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+            nextState = ROW3;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+
+        break;
+    
+    case ROW3: 
+        if (ThisEvent.EventType == ES_ENTRY){
+            Seed_ExtendArm();
+            printf("\n          I AM ON ROW NUMAB 3");
+        }
+        else if (ThisEvent.EventType == still){
+
+            printf("\n          TIME TO SEED 3");
+//            InitSeedSubHSM();
+
+        }
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+            nextState = RESET;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
     
-    case ARM_DOWN: 
+    case RESET:
         if (ThisEvent.EventType == ES_ENTRY){
-            Seed_LowerArm();
+            Seed_ReturnArm();
+            printf("\n              I AM RESETTING THE STEPPA");
         }
-        else if (ThisEvent.EventType == no_dirt){
-            
-            //we want to exit to above SubHSM in this case
-            ES_Timer_InitTimer(nextTimer, 400);
-            nextState = ARM_REST;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
-        else if (ThisEvent.EventType == yo_dirt){
-            nextState = SEED;
+        else if (ThisEvent.EventType == still){
+            ES_Timer_InitTimer(ColumnDone, 100);
+            nextState = ROW1;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
-      
-    case SEED: 
-        if (ThisEvent.EventType == ES_ENTRY){
-            ES_Timer_InitTimer(seedTimer, 300);
-            Seed_PushSeed();
-        }
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == seedTimer){
-            Seed_PullSeed();
-            Seed_RaiseArm();
-            
-            //we want to exit to above SubHSM in this case
-            ES_Timer_InitTimer(nextTimer, 600);
-            nextState = ARM_REST;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
-        break;
-        
+    
+                        
     default: // all unhandled states fall into here
         break;
     } // end switch on Current State
 
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunSeedSubHSM(EXIT_EVENT); // <- rename to your own Run function
+        RunExtendSubHSM(EXIT_EVENT); // <- rename to your own Run function
         CurrentState = nextState;
-        RunSeedSubHSM(ENTRY_EVENT); // <- rename to your own Run function
+        RunExtendSubHSM(ENTRY_EVENT); // <- rename to your own Run function
     }
 
     ES_Tail(); // trace call stack end

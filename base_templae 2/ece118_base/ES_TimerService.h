@@ -10,7 +10,7 @@
 
 #include <inttypes.h>
 
-#include "ES_Configure.h"
+#include "SeedES_Configure.h"
 #include "ES_Events.h"
 
 

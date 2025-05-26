@@ -27,8 +27,8 @@
 
 /* ---SERVO MOTOR START--- */
 #define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) [red]
-#define PUSH 1000
 #define PULL 650
+#define PUSH 1000
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE) [orange]
 #define RAISE 650
 #define LOWER 2000
@@ -114,6 +114,7 @@
  * @note  None. */
 void Seed_Init(void) {
     //motor initializations
+    printf("\nI AM INITIALIZED YAY");
     PWM_Init();
     PWM_SetFrequency(1000);
     PWM_AddPins(Motor1 | Motor2);
@@ -143,23 +144,28 @@ void Seed_Init(void) {
  * @brief  This function is used to set the speed and direction of the robot.
  * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
  * @author Max Dunne, 2012.01.06 */
-void Seed_MotorSpeed(void)
+void Seed_Motor1Speed(void)
 {
-    DC_DIR1 = 1; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
-    DC_DIR2 = 0;
+    DC_DIR1 = 0; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
+    DC_DIR2 = 1;
     PWM_SetDutyCycle(Motor1, MOVE);
-
+}
+// * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
+void Seed_Motor1Stop(void)
+{
+    DC_DIR1 = 0; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
+    DC_DIR2 = 0;
+    PWM_SetDutyCycle(Motor1, STOP);
+}
+void Seed_Motor2Speed(void)
+{
     DC_DIR3 = 1;
     DC_DIR4 = 0;
     PWM_SetDutyCycle(Motor2, MOVE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
-void Seed_MotorStop(void)
+void Seed_Motor2Stop(void)
 {
-    DC_DIR1 = 0; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
-    DC_DIR2 = 0;
-    PWM_SetDutyCycle(Motor1, STOP);
-
     DC_DIR3 = 0;
     DC_DIR4 = 0;
     PWM_SetDutyCycle(Motor2, STOP);
@@ -184,72 +190,72 @@ unsigned int Seed_IR_TWO(void)
 void Seed_ExtendArm(void)
 {   
     Stepper_SetRate(rate);
-    Stepper_SetSteps(extend_arm, extention_steps);
+    Stepper_SetSteps(extend_arm, extention_steps); //move 80 steps
     Stepper_StartSteps();
 }
 
 void Seed_ReturnArm(void)
 {   
     Stepper_SetRate(rate);
-    Stepper_SetSteps(reduce_arm, extention_steps * 2);
+    Stepper_SetSteps(reduce_arm, extention_steps * 2); //move 160 steps
     Stepper_StartSteps();
 }
 
 void Seed_RaiseArm(void)
 {   
-    RC_SetPulseTime(ArmServo, RAISE);
+    RC_SetPulseTime(ArmServo, RAISE); //position 650
 }
 
 void Seed_LowerArm(void)
 {   
-    RC_SetPulseTime(ArmServo, LOWER);
+    RC_SetPulseTime(ArmServo, LOWER); //position 2000
 }
 
 void Seed_PushSeed(void)
 {   
-    RC_SetPulseTime(SeedServo, PUSH);
+    RC_SetPulseTime(SeedServo, PUSH); //position 1000
 }
 
 void Seed_PullSeed(void)
 {   
-    RC_SetPulseTime(SeedServo, PULL);
+    RC_SetPulseTime(SeedServo, PULL); //position 650
 }
 
 //unsure if going to be used in final HSM
 //def useful in test case
 //doesnt work?
-void Seed_LineFollow(void)
-{   
-    printf("\n2");
-    int LINE = Seed_IR_ONE();
-    int POT = Seed_IR_TWO();
-    int test_soil = Seed_Soil();
-    
-    printf("\n3");
-    while(test_soil >= 700){
-        printf("\n4");
-        if (LINE > 500 && POT > 500){
-            Seed_MotorStop();
-            printf("\nI AM @ A PLANTER POT");
-            Seed_RaiseArm();
-            Seed_PushSeed();
-        }
-        else if (LINE > 500 && POT < 500){
-            Seed_MotorSpeed();
-            printf("\n    I AM ON A LINE");
-            Seed_LowerArm();
-            Seed_PullSeed();
-        }
-        else{
-            Seed_MotorStop();
-            printf("\n            I AM IDLING");
-            Seed_LowerArm();
-            Seed_PushSeed();
-        }
-    }
-    printf("\n5");
-    Seed_ReturnArm();
-}
+//void Seed_LineFollow(void)
+//{   
+//    printf("\n2");
+//    int LINE = Seed_IR_ONE();
+//    int POT = Seed_IR_TWO();
+//    int test_soil = Seed_Soil();
+//    
+//    printf("\n3");
+//    while(test_soil >= 700){
+//        printf("\n4");
+//        if (LINE > 500 && POT > 500){
+//            Seed_MotorStop();
+//            printf("\nI AM @ A PLANTER POT");
+//            Seed_RaiseArm();
+//            Seed_PushSeed();
+//        }
+//        else if (LINE > 500 && POT < 500){
+//            Seed_MotorSpeed();
+//            printf("\n    I AM ON A LINE");
+//            Seed_LowerArm();
+//            Seed_PullSeed();
+//        }
+//        else{
+//            Seed_MotorStop();
+//            printf("\n            I AM IDLING");
+//            Seed_LowerArm();
+//            Seed_PushSeed();
+//        }
+//    }
+//    printf("\n5");
+//    Seed_ReturnArm();
+//}
 
 //#define SEED_TEST
 #ifdef SEED_TEST
