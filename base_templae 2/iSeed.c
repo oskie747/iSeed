@@ -24,28 +24,27 @@
 
 
 //Various Pin Layouts for robot
-// [color] is added next to each port/pin to organize
 
 /* ---SERVO MOTOR START--- */
-#define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) [red]
+#define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) 
 #define PULL 650
 #define PUSH 2500
-#define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE) [orange]
+#define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE)
 #define RAISE 650
 #define LOWER 2000
 /* ---SERVO MOTOR END--- */
 
 
 /* ---SOIL SENSOR START--- */
-#define SoilSensor AD_PORTV5    //soil sensor Port [blue]
+#define SoilSensor AD_PORTV5    //soil sensor Port
 #define AirValue 777            //value of sensor exposed to air (adjusted based on calibration)
 #define WaterValue 386          //value of sensor submerged in water (adjusted based on calibration)
 /* ---SOIL SENSOR END--- */
 
 
 /* ---IR SENSOR START--- */
-#define IR_ONE AD_PORTV6        //infrared sensor 1 port [yellow]
-#define IR_TWO AD_PORTV7        //infrared sensor 2 port [purple]
+#define IR_ONE AD_PORTV6        //infrared sensor 1 port
+#define IR_TWO AD_PORTV7        //infrared sensor 2 port
 /* ---IR SENSOR END--- */
 
 
@@ -64,7 +63,7 @@
 #define DC_DIR3 PORTY05_LAT     
 #define DC_DIR4 PORTY06_LAT     
 
-#define MOVE 900               //speed at which DC motor moves
+#define MOVE 900                //speed at which DC motor moves
 #define STOP 0                  //stop the bot
 /* ---DC MOTOR END--- */
 
@@ -114,7 +113,7 @@
  * @note  None. */
 void Seed_Init(void) {
     //motor initializations
-    printf("\nI AM INITIALIZED YAY");
+//    printf("\nI AM INITIALIZED YAY");
     PWM_Init();
     PWM_SetFrequency(1000);
     PWM_AddPins(Motor1 | Motor2);
@@ -134,29 +133,36 @@ void Seed_Init(void) {
     
     //stepper motor initializations
     Stepper_Init();
+//    Stepper_SetRate(rate);
 }
 
-/**
- * @Function Seed_MotorSpeed(char newSpeed)
- * @param newSpeed - A value between 0 and 100 which is the new speed
- * @param of the motor. 0 stops the motor.
- * @return SUCCESS or ERROR
- * @brief  This function is used to set the speed and direction of the robot.
- * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
- * @author Max Dunne, 2012.01.06 */
+/* 
+ * sets the direction of the first motor
+ * as well as the speed at which it moves
+ */
 void Seed_Motor1Speed(void)
 {
-    DC_DIR1 = 1; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
+    DC_DIR1 = 1; //sets the direction of the first motor
     DC_DIR2 = 0;
     PWM_SetDutyCycle(Motor1, MOVE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
+
+/* 
+ * sets the direction of the first motor to 0, to not move
+ * as well as the speed to 0
+ */
 void Seed_Motor1Stop(void)
 {
-    DC_DIR1 = 0; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
+    DC_DIR1 = 0;
     DC_DIR2 = 0;
     PWM_SetDutyCycle(Motor1, STOP);
 }
+
+/* 
+ * sets the direction of the second motor
+ * as well as the speed at which it moves
+ */
 void Seed_Motor2Speed(void)
 {
     DC_DIR3 = 1;
@@ -164,6 +170,11 @@ void Seed_Motor2Speed(void)
     PWM_SetDutyCycle(Motor2, MOVE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
+
+/* 
+ * sets the direction of the second motor to 0, to not move
+ * as well as the speed to 0
+ */
 void Seed_Motor2Stop(void)
 {
     DC_DIR3 = 0;
@@ -172,21 +183,37 @@ void Seed_Motor2Stop(void)
 
 }
 
+/*
+ * reads the pin that the soil sensor is connected to
+ * returns an analog value that can be used for hysteresis in soil moisture level
+ */
 unsigned int Seed_Soil(void)
 {
     return AD_ReadADPin(SoilSensor);
 }
 
+/*
+ * reads the pin that the first infrared sensor is connected to
+ * returns an analog value that can be used to determine if looking at something
+ */
 unsigned int Seed_IR_ONE(void)
 {
     return AD_ReadADPin(IR_ONE);
 }
 
+/*
+ * reads the pin that the second infrared sensor is connected to
+ * returns an analog value that can be used to determine if looking at something
+ */
 unsigned int Seed_IR_TWO(void)
 {
     return AD_ReadADPin(IR_TWO);
 }
 
+/*
+ * sets a rate and amount of steps that the Stepper motor will take
+ * as well as the direction and starts the stepper motor
+ */
 void Seed_ExtendArm(void)
 {   
     Stepper_SetRate(rate);
@@ -194,69 +221,58 @@ void Seed_ExtendArm(void)
     Stepper_StartSteps();
 }
 
+/*
+ * sets a rate and amount of steps that the Stepper motor will take
+ * as well as the direction and starts the stepper motor
+ * difference from previous function is direction
+ * two methods to calculate the amount of steps
+ */
 void Seed_ReturnArm(void)
 {   
     Stepper_SetRate(rate);
     Stepper_SetSteps(reduce_arm, extention_steps * 2); //move 160 steps
+//    Stepper_SetSteps(reduce_arm, return_steps); //move 160 steps
     Stepper_StartSteps();
 }
 
+/*
+ * sets pwm signal for Arm Servo motor
+ * raises it to high position
+ */
 void Seed_RaiseArm(void)
 {   
     RC_SetPulseTime(ArmServo, RAISE); //position 650
 }
 
+/*
+ * sets pwm signal for Arm Servo motor
+ * lowers it to low position
+ */
 void Seed_LowerArm(void)
 {   
     RC_SetPulseTime(ArmServo, LOWER); //position 2000
 }
 
+/*
+ * sets pwm signal for Seed pushing Servo motor
+ * pushes out the servo and seed
+ */
 void Seed_PushSeed(void)
 {   
     RC_SetPulseTime(SeedServo, PUSH); //position 1000
 }
 
+/*
+ * sets pwm signal for Seed pushing Servo motor
+ * pulls back the servo motor
+ */
 void Seed_PullSeed(void)
 {   
     RC_SetPulseTime(SeedServo, PULL); //position 650
 }
 
-//unsure if going to be used in final HSM
-//def useful in test case
-//doesnt work?
-//void Seed_LineFollow(void)
-//{   
-//    printf("\n2");
-//    int LINE = Seed_IR_ONE();
-//    int POT = Seed_IR_TWO();
-//    int test_soil = Seed_Soil();
-//    
-//    printf("\n3");
-//    while(test_soil >= 700){
-//        printf("\n4");
-//        if (LINE > 500 && POT > 500){
-//            Seed_MotorStop();
-//            printf("\nI AM @ A PLANTER POT");
-//            Seed_RaiseArm();
-//            Seed_PushSeed();
-//        }
-//        else if (LINE > 500 && POT < 500){
-//            Seed_MotorSpeed();
-//            printf("\n    I AM ON A LINE");
-//            Seed_LowerArm();
-//            Seed_PullSeed();
-//        }
-//        else{
-//            Seed_MotorStop();
-//            printf("\n            I AM IDLING");
-//            Seed_LowerArm();
-//            Seed_PushSeed();
-//        }
-//    }
-//    printf("\n5");
-//    Seed_ReturnArm();
-//}
 
+/* TEST CASE SECTION */
 //#define SEED_TEST
 #ifdef SEED_TEST
 void main(void){

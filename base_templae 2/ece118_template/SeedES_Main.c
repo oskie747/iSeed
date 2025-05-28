@@ -11,9 +11,7 @@ void main(void)
 
     BOARD_Init();
     
-    printf("Starting ES Framework Template\r\n");
-    printf("using the 2nd Generation Events & Services Framework\r\n");
-
+    printf("Starting iSeed - The Seed Planting Robot Hierarchical State Machine\r\n");
     
     // Your hardware initialization function calls go here
     Seed_Init();

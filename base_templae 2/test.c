@@ -299,7 +299,7 @@ void main(void){
     Seed_Init();
     
     while(1){
-        Seed_Motor1Speed();
+//        Seed_Motor1Speed();
         Seed_Motor2Speed();
     }
 }

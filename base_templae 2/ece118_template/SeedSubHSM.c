@@ -135,13 +135,15 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
         }
         break;
 
-    case ARM_REST: // in the first state, replace this with correct names
+    case ARM_REST: 
         if (ThisEvent.EventType == ES_ENTRY){
+            //we are preparing to check for soil, so set the servos to these positions
             printf("\n 3-----SERVO POSITION SETTING");
             Seed_RaiseArm();
             Seed_PullSeed();
         }
         else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == lowerTimer){
+            //entry condition timer is done and we can lower the arm now
             nextState = ARM_DOWN;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -150,10 +152,12 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
     
     case ARM_DOWN: 
         if (ThisEvent.EventType == ES_ENTRY){
+            //time to lower the arm
             printf("\n 3-----ARM LOWERING");
             Seed_LowerArm();
         }
         else if (ThisEvent.EventType == no_dirt){
+            //no dirt has been detected so we move on to the next row via a short timer
             printf("\n 3-----NO DIRT");
             //we want to exit to above SubHSM in this case
             ES_Timer_InitTimer(nextTimer, 400);
@@ -162,6 +166,7 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
             ThisEvent.EventType = ES_NO_EVENT;
         }
         else if (ThisEvent.EventType == yo_dirt){
+            //dirt was detected and we want to dispense a seed now
             printf("\n 3-----YO DIRT");
             nextState = SEED;
             makeTransition = TRUE;
@@ -171,14 +176,17 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
       
     case SEED: 
         if (ThisEvent.EventType == ES_ENTRY){
+            //we found dirt so start a short timer longer than it takes to dispense the seed
             printf("\n 3-----TIME TO SEED");
-            ES_Timer_InitTimer(seedTimer, 300);
+            ES_Timer_InitTimer(seedTimer, 1000);
             Seed_PushSeed();
         }
         else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == seedTimer){
+            //seed was pushed and timer is done so we move on to next row
             printf("\n 3-----SEEDING DONE TIME TO GO HOME");
-            Seed_PullSeed();
-            Seed_RaiseArm();
+
+//            Seed_PullSeed();
+//            Seed_RaiseArm();
             
             //we want to exit to above SubHSM in this case
             ES_Timer_InitTimer(nextTimer, 600);

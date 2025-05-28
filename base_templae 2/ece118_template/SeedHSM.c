@@ -180,17 +180,10 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
-        else if (ThisEvent.EventType == still){
-            //THIS OCCURS WHEN THE LINE IS NO MORE
-            Seed_MotorSpeed();
-            nextState = LINE_FOLLOW;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
         else if (ThisEvent.EventType == ir2_off){
             //THIS OCCURS WHEN A PLANTER IS REACHED
+            InitExtendSubHSM();             //initialize ExtendSubHSM
             Seed_MotorStop();
-            InitExtendSubHSM();
             nextState = PLANTER;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -198,7 +191,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         break;
     
     case PLANTER:
-        //while in this state, STOP and go into the first layer subHSM
+        //while in this state, STOP and go into ExtendSubHSM
         Seed_MotorStop();
         if (ThisEvent.EventType == ES_ENTRY){
             printf("\n 1---PLANTER");
@@ -206,20 +199,16 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
 
         ThisEvent = RunExtendSubHSM(ThisEvent);
         
+        //entire column is finished, time to move on to next one
         if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == ColumnDone){
             nextState = LINE_FOLLOW;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
-        
-//        switch (ThisEvent.EventType) {
-//        case ES_NO_EVENT:
-//        default:
-//            break;
-//        }
         break;
     
     case DONE:
+        //checked every planter, and reached the end of the environment
         if (ThisEvent.EventType == ES_ENTRY){
             Seed_MotorStop();
             printf("\n 1---EPIC FREAKING SNOWMAN ON A SKATEBOARD TIME");
@@ -230,19 +219,6 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             printf("\n     O           O");
         }
         Seed_MotorStop();
-        
-//        ThisEvent = RunTemplateSubHSM(ThisEvent);
-//        if (ThisEvent.EventType == ir1_off){
-//            nextState = LINE_FOLLOW;
-//            makeTransition = TRUE;
-//            ThisEvent.EventType = ES_NO_EVENT;
-//        }
-        
-//        switch (ThisEvent.EventType) {
-//        case ES_NO_EVENT:
-//        default:
-//            break;
-//        }
         break;
     
         
