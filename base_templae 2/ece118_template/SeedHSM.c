@@ -145,7 +145,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
     uint8_t makeTransition = FALSE; // use to flag transition
     TemplateHSMState_t nextState; // <- change type to correct enum
 
-    ES_Tattle(); // trace call stack
+//    ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
     case InitPState: // If current state is initial Pseudo State
@@ -170,7 +170,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         //while in this state MOVE until a planter is reached, or the line is gone
         Seed_MotorSpeed();
         if (ThisEvent.EventType == ES_ENTRY){
-            printf("\n 1---LINE FOLLOW");
+            printf("\n 1-LINE FOLLOW");
         }
 
         else if (ThisEvent.EventType == ir1_on){
@@ -194,7 +194,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         //while in this state, STOP and go into ExtendSubHSM
         Seed_MotorStop();
         if (ThisEvent.EventType == ES_ENTRY){
-            printf("\n 1---PLANTER");
+            printf("\n 1-PLANTER");
         }
 
         ThisEvent = RunExtendSubHSM(ThisEvent);
@@ -211,7 +211,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         //checked every planter, and reached the end of the environment
         if (ThisEvent.EventType == ES_ENTRY){
             Seed_MotorStop();
-            printf("\n 1---EPIC FREAKING SNOWMAN ON A SKATEBOARD TIME");
+            printf("\n 1-EPIC FREAKING SNOWMAN ON A SKATEBOARD TIME");
             printf("\n           ^");
             printf("\n         (  >)");
             printf("\n     ---(  .  )---");

@@ -60,8 +60,8 @@
 #define Motor2 PWM_PORTY04      //Port that DC motor 2 is controlled through
 #define DCin3 PORTX05_TRIS      //IN3 on H-bridge
 #define DCin4 PORTX06_TRIS      //IN4 on H-bridge
-#define DC_DIR3 PORTY05_LAT     
-#define DC_DIR4 PORTY06_LAT     
+#define DC_DIR3 PORTX05_LAT     
+#define DC_DIR4 PORTX06_LAT     
 
 #define MOVE 900                //speed at which DC motor moves
 #define STOP 0                  //stop the bot
@@ -125,7 +125,8 @@ void Seed_Init(void) {
     
     //servo initializations
     RC_Init();
-    RC_AddPins(0x3FF);
+    RC_AddPins(SeedServo | ArmServo); 
+    //DO NOT USE 0x3FF TO ADD ALL THE RC PINS, MESSES UP SOMETHING WHILE IN THE ES_FRAMEWORK
     
     //sensor initializations
     AD_Init();
@@ -133,7 +134,7 @@ void Seed_Init(void) {
     
     //stepper motor initializations
     Stepper_Init();
-//    Stepper_SetRate(rate);
+    Stepper_SetRate(rate);
 }
 
 /* 
@@ -216,7 +217,7 @@ unsigned int Seed_IR_TWO(void)
  */
 void Seed_ExtendArm(void)
 {   
-    Stepper_SetRate(rate);
+//    Stepper_SetRate(rate);
     Stepper_SetSteps(extend_arm, extention_steps); //move 80 steps
     Stepper_StartSteps();
 }
@@ -229,7 +230,7 @@ void Seed_ExtendArm(void)
  */
 void Seed_ReturnArm(void)
 {   
-    Stepper_SetRate(rate);
+//    Stepper_SetRate(rate);
     Stepper_SetSteps(reduce_arm, extention_steps * 2); //move 160 steps
 //    Stepper_SetSteps(reduce_arm, return_steps); //move 160 steps
     Stepper_StartSteps();

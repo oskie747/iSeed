@@ -141,7 +141,7 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         break;
 
     case ROW1:
-//        ThisEvent = RunSeedSubHSM(ThisEvent);
+        ThisEvent = RunSeedSubHSM(ThisEvent);
         if (ThisEvent.EventType == ES_ENTRY){
             //we have entered the state machine and are on row one of the environment
             printf("\n 2----I AM ON ROW NUMBA 1");
@@ -149,11 +149,9 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == EntryTimer){
             //the entry condition timer is done and we are ready to check for soil
             printf("\n 2----TIME TO SEED 1");
-            ES_Timer_InitTimer(tempTimer, 2000); //for testing purposes only
-//            InitSeedSubHSM();
+            InitSeedSubHSM();
         }
-//        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
             //the soil checking is done and we are ready to move on to the next row
             Seed_ExtendArm();
             nextState = ROW2;
@@ -164,7 +162,7 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         break;
     
     case ROW2:
-//        ThisEvent = RunSeedSubHSM(ThisEvent);
+        ThisEvent = RunSeedSubHSM(ThisEvent);
         if (ThisEvent.EventType == ES_ENTRY){
             //we have arrived at the next row
 //            Seed_ExtendArm();
@@ -173,11 +171,9 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         else if (ThisEvent.EventType == still){
             //the stepper motor is done moving and we are ready to check for soil
             printf("\n 2----TIME TO SEED 2");
-            ES_Timer_InitTimer(tempTimer, 1200); //for testing purposes only
-//            InitSeedSubHSM();
+            InitSeedSubHSM();
         }
-//        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
             //the soil checking is done and we are ready to move on to the next row
             Seed_ExtendArm();
             nextState = ROW3;
@@ -188,7 +184,7 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         break;
     
     case ROW3: 
-//        ThisEvent = RunSeedSubHSM(ThisEvent);
+        ThisEvent = RunSeedSubHSM(ThisEvent);
         if (ThisEvent.EventType == ES_ENTRY){
             //we have arrived at the next row
 //            Seed_ExtendArm();
@@ -197,11 +193,9 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         else if (ThisEvent.EventType == still){
             //the stepper motor is done moving and we are ready to check for soil
             printf("\n 2----TIME TO SEED 3");
-            ES_Timer_InitTimer(tempTimer, 1200); //for testing purposes only
-//            InitSeedSubHSM();
+            InitSeedSubHSM();
         }
-//        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
             //the soil checking is done and we are ready to move on to the first row again
             Seed_ReturnArm();
             nextState = RESET;

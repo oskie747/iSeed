@@ -261,6 +261,8 @@ void PrintEvent(void);
 
 void main(void) {
     BOARD_Init();
+    ES_Initialize();
+    printf("\nes iniitialize");
     /* user initialization code goes here */
     Seed_Init();
     

@@ -11,7 +11,7 @@ void main(void)
 
     BOARD_Init();
     
-    printf("Starting iSeed - The Seed Planting Robot Hierarchical State Machine\r\n");
+    printf("\nStarting iSeed - The Seed Planting Robot Hierarchical State Machine\r\n");
     
     // Your hardware initialization function calls go here
     Seed_Init();
