@@ -23,6 +23,7 @@
 #include "Stepper.h"
 #include "serial.h"
 #include "timers.h"
+#include "iSeed.h"
 
 #define DELAY(x)    for (int wait = 0; wait <= x; wait++) {asm("nop");}
 
@@ -33,6 +34,8 @@
 //#define SERVO_TEST2
 //#define COMBO_TEST_IR_motor
 //#define steppa_TEST
+//#define bruh
+#define moment
 
 #define Servo1 RC_PORTV03   //
 #define Servo2 RC_PORTV04   //
@@ -255,5 +258,49 @@ int main(void) {
     
     
     return 0;
+}
+#endif
+
+#ifdef bruh
+
+void main(void){
+    printf("\n lets get this test party started");
+    BOARD_Init();
+    Seed_Init();
+    int i = 0;
+    int j = 0;
+    
+    while(1){
+        for (i = 0; i < 40; i++) {
+            Seed_Motor1Speed();
+            Seed_ExtendArm();
+            Seed_RaiseArm();
+            Seed_PullSeed();
+            printf("\n IR ONE VALUE: %d", Seed_IR_ONE());
+            printf("\n IR TWO VALUE: %d", Seed_IR_TWO());
+        }
+        
+        for (j = 0; j < 40; j++) {
+            Seed_Motor2Speed();
+            Seed_ReturnArm();
+            Seed_LowerArm();
+            Seed_PushSeed();
+            printf("\n SOIL VALUE: %d", Seed_Soil());
+        }
+    }
+}
+#endif
+
+#ifdef moment
+
+void main(void){
+    printf("\n lets get this test party started");
+    BOARD_Init();
+    Seed_Init();
+    
+    while(1){
+        Seed_Motor1Speed();
+        Seed_Motor2Speed();
+    }
 }
 #endif

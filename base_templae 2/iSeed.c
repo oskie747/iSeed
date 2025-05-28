@@ -23,16 +23,16 @@
 #include <sys/attribs.h>
 
 
+//Various Pin Layouts for robot
 // [color] is added next to each port/pin to organize
 
 /* ---SERVO MOTOR START--- */
 #define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) [red]
 #define PULL 650
-#define PUSH 1000
+#define PUSH 2500
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE) [orange]
 #define RAISE 650
 #define LOWER 2000
-
 /* ---SERVO MOTOR END--- */
 
 
@@ -61,8 +61,8 @@
 #define Motor2 PWM_PORTY04      //Port that DC motor 2 is controlled through
 #define DCin3 PORTX05_TRIS      //IN3 on H-bridge
 #define DCin4 PORTX06_TRIS      //IN4 on H-bridge
-#define DC_DIR3 PORTY08_LAT     
-#define DC_DIR4 PORTY07_LAT     
+#define DC_DIR3 PORTY05_LAT     
+#define DC_DIR4 PORTY06_LAT     
 
 #define MOVE 900               //speed at which DC motor moves
 #define STOP 0                  //stop the bot
@@ -146,8 +146,8 @@ void Seed_Init(void) {
  * @author Max Dunne, 2012.01.06 */
 void Seed_Motor1Speed(void)
 {
-    DC_DIR1 = 0; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
-    DC_DIR2 = 1;
+    DC_DIR1 = 1; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
+    DC_DIR2 = 0;
     PWM_SetDutyCycle(Motor1, MOVE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22

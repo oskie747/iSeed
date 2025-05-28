@@ -36,6 +36,7 @@
 #include "iSeed.h"
 #include "SeedService.h"
 #include "ES_Timers.h"
+#include "SeedHSM.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -267,13 +268,13 @@ void main(void) {
     
     Seed_RaiseArm();
     
-    Seed_PullSeed();
+    Seed_PushSeed();
     
     // Do not alter anything below this line
     int i;
 
     printf("\r\nEvent checking test harness for %s", __FILE__);
-
+    
     while (1) {
         if (IsTransmitEmpty()) {
             for (i = 0; i< sizeof (EventList) >> 2; i++) {

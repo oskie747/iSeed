@@ -26,6 +26,9 @@
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "SeedES_Configure.h"
 #include "ES_Framework.h"
@@ -33,6 +36,7 @@
 #include "SeedHSM.h"
 #include "ExtendSubHSM.h"
 #include "SeedSubHSM.h"
+#include "iSeed.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
@@ -133,6 +137,7 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
 
     case ARM_REST: // in the first state, replace this with correct names
         if (ThisEvent.EventType == ES_ENTRY){
+            printf("\n 3-----SERVO POSITION SETTING");
             Seed_RaiseArm();
             Seed_PullSeed();
         }
@@ -145,10 +150,11 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
     
     case ARM_DOWN: 
         if (ThisEvent.EventType == ES_ENTRY){
+            printf("\n 3-----ARM LOWERING");
             Seed_LowerArm();
         }
         else if (ThisEvent.EventType == no_dirt){
-            
+            printf("\n 3-----NO DIRT");
             //we want to exit to above SubHSM in this case
             ES_Timer_InitTimer(nextTimer, 400);
             nextState = ARM_REST;
@@ -156,6 +162,7 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
             ThisEvent.EventType = ES_NO_EVENT;
         }
         else if (ThisEvent.EventType == yo_dirt){
+            printf("\n 3-----YO DIRT");
             nextState = SEED;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -164,10 +171,12 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
       
     case SEED: 
         if (ThisEvent.EventType == ES_ENTRY){
+            printf("\n 3-----TIME TO SEED");
             ES_Timer_InitTimer(seedTimer, 300);
             Seed_PushSeed();
         }
         else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == seedTimer){
+            printf("\n 3-----SEEDING DONE TIME TO GO HOME");
             Seed_PullSeed();
             Seed_RaiseArm();
             

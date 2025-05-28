@@ -26,6 +26,9 @@
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "SeedES_Configure.h"
 #include "ES_Framework.h"
@@ -127,7 +130,7 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             
-            ES_Timer_InitTimer(EntryTimer, 400);
+            ES_Timer_InitTimer(EntryTimer, 1000);
 //            InitSeedSubHSM();
             
             // now put the machine into the actual initial state
@@ -138,16 +141,17 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         break;
 
     case ROW1: // in the first state, replace this with correct names
+//        ThisEvent = RunSeedSubHSM(ThisEvent);
         if (ThisEvent.EventType == ES_ENTRY){
-            printf("\n  I AM ON ROW NUMBA 1");
+            printf("\n 2----I AM ON ROW NUMBA 1");
         }
         else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == EntryTimer){
-
-            printf("\n  TIME TO SEED 1");
+            printf("\n 2----TIME TO SEED 1");
+            ES_Timer_InitTimer(tempTimer, 1200); //for testing purposes only
 //            InitSeedSubHSM();
-
         }
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+//        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
             nextState = ROW2;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -155,18 +159,19 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         
         break;
     
-    case ROW2: 
+    case ROW2:
+//        ThisEvent = RunSeedSubHSM(ThisEvent);
         if (ThisEvent.EventType == ES_ENTRY){
             Seed_ExtendArm();
-            printf("\n      I AM ON ROW NUMAB 2");
+            printf("\n 2----I AM ON ROW NUMBA 2");
         }
         else if (ThisEvent.EventType == still){
-
-            printf("\n      TIME TO SEED 2");
+            printf("\n 2----TIME TO SEED 2");
+            ES_Timer_InitTimer(tempTimer, 1200); //for testing purposes only
 //            InitSeedSubHSM();
-
         }
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+//        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
             nextState = ROW3;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -175,17 +180,18 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         break;
     
     case ROW3: 
+//        ThisEvent = RunSeedSubHSM(ThisEvent);
         if (ThisEvent.EventType == ES_ENTRY){
             Seed_ExtendArm();
-            printf("\n          I AM ON ROW NUMAB 3");
+            printf("\n 2----I AM ON ROW NUMBA 3");
         }
         else if (ThisEvent.EventType == still){
-
-            printf("\n          TIME TO SEED 3");
+            printf("\n 2----TIME TO SEED 3");
+            ES_Timer_InitTimer(tempTimer, 1200); //for testing purposes only
 //            InitSeedSubHSM();
-
         }
-        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+//        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == nextTimer){
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
             nextState = RESET;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -195,10 +201,10 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
     case RESET:
         if (ThisEvent.EventType == ES_ENTRY){
             Seed_ReturnArm();
-            printf("\n              I AM RESETTING THE STEPPA");
+            printf("\n 2----I AM RESETTING THE STEPPA");
         }
         else if (ThisEvent.EventType == still){
-            ES_Timer_InitTimer(ColumnDone, 100);
+            ES_Timer_InitTimer(ColumnDone, 1000);
             nextState = ROW1;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;

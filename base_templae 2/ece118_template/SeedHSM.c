@@ -155,9 +155,8 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
-            
+
 //            InitExtendSubHSM();
-//            InitSeedSubHSM();
             
             // now put the machine into the actual initial state
             nextState = LINE_FOLLOW;
@@ -169,22 +168,29 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
 
     case LINE_FOLLOW:
         //while in this state MOVE until a planter is reached, or the line is gone
-        printf("\n  LINE FOLLOW");
         Seed_MotorSpeed();
-        
-//        ThisEvent = RunExtendSubHSM(ThisEvent);
-        
-        if (ThisEvent.EventType == yo_dirt){ //test case to turn everything "off"
+        if (ThisEvent.EventType == ES_ENTRY){
+            printf("\n 1---LINE FOLLOW");
+        }
+
+        else if (ThisEvent.EventType == ir1_on){
             //THIS OCCURS WHEN THE LINE IS NO MORE
             Seed_MotorStop();
             nextState = DONE;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
-        else if (ThisEvent.EventType == ir1_on && ThisEvent.EventType == ir2_off){
+        else if (ThisEvent.EventType == still){
+            //THIS OCCURS WHEN THE LINE IS NO MORE
+            Seed_MotorSpeed();
+            nextState = LINE_FOLLOW;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        else if (ThisEvent.EventType == ir2_off){
             //THIS OCCURS WHEN A PLANTER IS REACHED
             Seed_MotorStop();
-//            InitExtendSubHSM();
+            InitExtendSubHSM();
             nextState = PLANTER;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -192,11 +198,13 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         break;
     
     case PLANTER:
-        //while in this state, STOP and go into subHSM
-        printf("\n      PLANTER");
+        //while in this state, STOP and go into the first layer subHSM
         Seed_MotorStop();
-        
-//        ThisEvent = RunExtendSubHSM(ThisEvent);
+        if (ThisEvent.EventType == ES_ENTRY){
+            printf("\n 1---PLANTER");
+        }
+
+        ThisEvent = RunExtendSubHSM(ThisEvent);
         
         if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == ColumnDone){
             nextState = LINE_FOLLOW;
@@ -212,7 +220,15 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         break;
     
     case DONE:
-        printf("\nI CAN NEVER LEAVE HERE");
+        if (ThisEvent.EventType == ES_ENTRY){
+            Seed_MotorStop();
+            printf("\n 1---EPIC FREAKING SNOWMAN ON A SKATEBOARD TIME");
+            printf("\n           ^");
+            printf("\n         (  >)");
+            printf("\n     ---(  .  )---");
+            printf("\n    <__(___.___)__>");  
+            printf("\n     O           O");
+        }
         Seed_MotorStop();
         
 //        ThisEvent = RunTemplateSubHSM(ThisEvent);
