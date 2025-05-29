@@ -155,7 +155,8 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             // Initialize all sub-state machines
-
+            Seed_RaiseArm();
+            Seed_PullSeed();
 //            InitExtendSubHSM();
             
             // now put the machine into the actual initial state

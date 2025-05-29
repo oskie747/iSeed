@@ -107,7 +107,7 @@ static const char *EventNames[] = {
 #define TIMER5_RESP_FUNC PostSeedHSM
 #define TIMER6_RESP_FUNC PostSeedHSM
 #define TIMER7_RESP_FUNC PostSeedHSM
-#define TIMER8_RESP_FUNC TIMER_UNUSED
+#define TIMER8_RESP_FUNC PostSeedHSM
 #define TIMER9_RESP_FUNC TIMER_UNUSED
 #define TIMER10_RESP_FUNC TIMER_UNUSED
 #define TIMER11_RESP_FUNC TIMER_UNUSED
@@ -124,15 +124,17 @@ static const char *EventNames[] = {
 // the timer number matches where the timer event will be routed
 
 #define GENERIC_NAMED_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
-#define ExtendTimer 1
-#define tempTimer   2
-#define lowerTimer  3
-#define seedTimer   4
+#define ExtendTimer    1
+#define tempTimer      2
+#define lowerTimer     3
+#define seedTimer      4
 
-#define EntryTimer  6
-#define ColumnDone  7
+#define EntryTimer     6
+#define ColumnDone     7
 
-#define nextTimer   5
+#define nextTimer      5
+
+#define CheckSoilTimer 8
 
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 

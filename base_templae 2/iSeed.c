@@ -27,11 +27,11 @@
 
 /* ---SERVO MOTOR START--- */
 #define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) 
-#define PULL 650
-#define PUSH 2500
+#define PULL 900
+#define PUSH 650
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE)
-#define RAISE 650
-#define LOWER 2000
+#define RAISE 2000
+#define LOWER 650
 /* ---SERVO MOTOR END--- */
 
 
@@ -63,7 +63,7 @@
 #define DC_DIR3 PORTX05_LAT     
 #define DC_DIR4 PORTX06_LAT     
 
-#define MOVE 900                //speed at which DC motor moves
+#define MOVE 500                //speed at which DC motor moves
 #define STOP 0                  //stop the bot
 /* ---DC MOTOR END--- */
 
@@ -143,8 +143,8 @@ void Seed_Init(void) {
  */
 void Seed_Motor1Speed(void)
 {
-    DC_DIR1 = 1; //sets the direction of the first motor
-    DC_DIR2 = 0;
+    DC_DIR1 = 0; //sets the direction of the first motor
+    DC_DIR2 = 1;
     PWM_SetDutyCycle(Motor1, MOVE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
