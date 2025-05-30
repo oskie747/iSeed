@@ -27,7 +27,7 @@
 
 /* ---SERVO MOTOR START--- */
 #define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) 
-#define PULL 900
+#define PULL 1475               //maybe the amount to dispense and load one seed
 #define PUSH 650
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE)
 #define RAISE 2000
@@ -43,27 +43,27 @@
 
 
 /* ---IR SENSOR START--- */
-#define IR_ONE AD_PORTV6        //infrared sensor 1 port
-#define IR_TWO AD_PORTV7        //infrared sensor 2 port
+#define IR_ONE AD_PORTV6        //infrared sensor 1 port line follow
+#define IR_TWO AD_PORTV7        //infrared sensor 2 port planter pot detection
 /* ---IR SENSOR END--- */
 
 
 /* ---DC MOTOR START--- */
 //Motor 1
-#define Motor1 PWM_PORTX11      //Port that DC motor 1 is controlled through
+#define Motor1 PWM_PORTX11      //Port that DC motor 1 is controlled through ENA 1
 #define DCin1 PORTX04_TRIS      //IN1 on H-bridge
 #define DCin2 PORTX03_TRIS      //IN2 on H-bridge
 #define DC_DIR1 PORTX04_LAT     
 #define DC_DIR2 PORTX03_LAT     
 
 //Motor 2
-#define Motor2 PWM_PORTY04      //Port that DC motor 2 is controlled through
+#define Motor2 PWM_PORTY04      //Port that DC motor 2 is controlled through ENA 2
 #define DCin3 PORTX05_TRIS      //IN3 on H-bridge
 #define DCin4 PORTX06_TRIS      //IN4 on H-bridge
 #define DC_DIR3 PORTX05_LAT     
 #define DC_DIR4 PORTX06_LAT     
 
-#define MOVE 500                //speed at which DC motor moves
+#define MOVE 400                //speed at which DC motor moves
 #define STOP 0                  //stop the bot
 /* ---DC MOTOR END--- */
 
@@ -73,10 +73,10 @@
  * stepper motor uses predefined pins/ports from Stepper.h
  * these are PORTZ 03-05 & 07-09
  */
-#define extention_steps 80      //amount of steps to reach each planter
+#define extention_steps 80      //amount of steps to reach each planter based on arm length
 #define return_steps 160        //amount of steps to reach each origin from farthest planter
-#define extend_arm REVERSE      //ignore the naming convention I am sorry :(
-#define reduce_arm FORWARD      //ignore the naming convention I am sorry :(
+#define extend_arm FORWARD      //ignore the naming convention I am sorry :(
+#define reduce_arm REVERSE      //ignore the naming convention I am sorry :(
 #define rate 100                //rate at which stepper motor moves
 /* ---STEPPER MOTOR END--- */
 

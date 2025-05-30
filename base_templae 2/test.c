@@ -29,13 +29,13 @@
 
 //#define IR_TEST
 //#define IR_TEST2
-//#define SS_TEST
+#define SS_TEST
 //#define SERVO_TEST
 //#define SERVO_TEST2
 //#define COMBO_TEST_IR_motor
 //#define steppa_TEST
 //#define bruh
-#define moment
+//#define moment
 
 #define Servo1 RC_PORTV03   //
 #define Servo2 RC_PORTV04   //
