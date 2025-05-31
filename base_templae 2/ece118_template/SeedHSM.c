@@ -192,7 +192,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         if (ThisEvent.EventType == ES_ENTRY){
             printf("\n 1-LINE FOLLOW");
         }
-
+        
         else if (ThisEvent.EventType == ir1_on){
             //THIS OCCURS WHEN THE LINE IS NO MORE
             Seed_MotorStop();

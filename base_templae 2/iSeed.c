@@ -27,7 +27,7 @@
 
 /* ---SERVO MOTOR START--- */
 #define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) 
-#define PULL 1275               //maybe the amount to dispense and load one seed
+#define PULL 1300               //maybe the amount to dispense and load one seed
 #define PUSH 650
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE)
 #define RAISE 2000
