@@ -52,16 +52,18 @@
 
 typedef enum {
     InitPState,
+    ORIENT,
     LINE_FOLLOW,
     PLANTER,
-    DONE
+    IDLE
 } TemplateHSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
+    "ORIENT",
 	"LINE_FOLLOW",
     "PLANTER",
-    "DONE"
+    "IDLE"
 };
 
 
@@ -160,13 +162,30 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
 //            InitExtendSubHSM();
             
             // now put the machine into the actual initial state
-            nextState = LINE_FOLLOW;
+            nextState = ORIENT;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             ;
         }
         break;
 
+    case ORIENT:
+        //while in this state MOVE until the end of the line, then we start planting
+        Seed_MotorRev();
+        if (ThisEvent.EventType == ES_ENTRY){
+            printf("\n 1-ORIENTATION");
+        }
+
+        else if (ThisEvent.EventType == ir1_on){
+            //THIS OCCURS WHEN WE ARE READY TO FOLLOW LINE AND PLANT
+            Seed_MotorStop();
+            ES_Timer_InitTimer(tempTimer, 1000);
+            nextState = IDLE;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+        break;
+   
     case LINE_FOLLOW:
         //while in this state MOVE until a planter is reached, or the line is gone
         Seed_MotorSpeed();
@@ -177,7 +196,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         else if (ThisEvent.EventType == ir1_on){
             //THIS OCCURS WHEN THE LINE IS NO MORE
             Seed_MotorStop();
-            nextState = DONE;
+            nextState = IDLE;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
@@ -208,7 +227,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         }
         break;
     
-    case DONE:
+    case IDLE:
         //checked every planter, and reached the end of the environment
         if (ThisEvent.EventType == ES_ENTRY){
             Seed_MotorStop();
@@ -219,7 +238,14 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             printf("\n    <__(___.___)__>");  
             printf("\n     O           O");
         }
-        Seed_MotorStop();
+        else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
+            printf("\n 1-DONE ORIENTATION STAGE OF ENVIRONMENT TIME TO PLANT");
+            Seed_MotorSpeed();
+            nextState = LINE_FOLLOW;
+            makeTransition = TRUE;
+            ThisEvent.EventType = ES_NO_EVENT;
+        }
+
         break;
     
         
@@ -246,6 +272,11 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
 void Seed_MotorSpeed(void){
     Seed_Motor1Speed();
     Seed_Motor2Speed();
+}
+
+void Seed_MotorRev(void){
+    Seed_Motor1Rev();
+    Seed_Motor2Rev();
 }
 
 void Seed_MotorStop(void){

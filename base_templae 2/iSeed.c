@@ -27,7 +27,7 @@
 
 /* ---SERVO MOTOR START--- */
 #define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) 
-#define PULL 1475               //maybe the amount to dispense and load one seed
+#define PULL 1275               //maybe the amount to dispense and load one seed
 #define PUSH 650
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE)
 #define RAISE 2000
@@ -73,7 +73,7 @@
  * stepper motor uses predefined pins/ports from Stepper.h
  * these are PORTZ 03-05 & 07-09
  */
-#define extention_steps 80      //amount of steps to reach each planter based on arm length
+#define extention_steps 75      //amount of steps to reach each planter based on arm length [70-85]
 #define return_steps 160        //amount of steps to reach each origin from farthest planter
 #define extend_arm FORWARD      //ignore the naming convention I am sorry :(
 #define reduce_arm REVERSE      //ignore the naming convention I am sorry :(
@@ -143,8 +143,8 @@ void Seed_Init(void) {
  */
 void Seed_Motor1Speed(void)
 {
-    DC_DIR1 = 0; //sets the direction of the first motor
-    DC_DIR2 = 1;
+    DC_DIR1 = 1; //sets the direction of the first motor
+    DC_DIR2 = 0;
     PWM_SetDutyCycle(Motor1, MOVE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
@@ -159,6 +159,16 @@ void Seed_Motor1Stop(void)
     DC_DIR2 = 0;
     PWM_SetDutyCycle(Motor1, STOP);
 }
+/* 
+ * sets the direction of the second motor
+ * as well as the speed at which it moves
+ */
+void Seed_Motor1Rev(void)
+{
+    DC_DIR1 = 0;
+    DC_DIR2 = 1;
+    PWM_SetDutyCycle(Motor1, MOVE);
+}
 
 /* 
  * sets the direction of the second motor
@@ -166,8 +176,8 @@ void Seed_Motor1Stop(void)
  */
 void Seed_Motor2Speed(void)
 {
-    DC_DIR3 = 1;
-    DC_DIR4 = 0;
+    DC_DIR3 = 0;
+    DC_DIR4 = 1;
     PWM_SetDutyCycle(Motor2, MOVE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
@@ -183,6 +193,17 @@ void Seed_Motor2Stop(void)
     PWM_SetDutyCycle(Motor2, STOP);
 
 }
+/* 
+ * sets the direction of the second motor
+ * as well as the speed at which it moves
+ */
+void Seed_Motor2Rev(void)
+{
+    DC_DIR3 = 1;
+    DC_DIR4 = 0;
+    PWM_SetDutyCycle(Motor2, MOVE);
+}
+
 
 /*
  * reads the pin that the soil sensor is connected to
@@ -218,7 +239,7 @@ unsigned int Seed_IR_TWO(void)
 void Seed_ExtendArm(void)
 {   
 //    Stepper_SetRate(rate);
-    Stepper_SetSteps(extend_arm, extention_steps); //move 80 steps
+    Stepper_SetSteps(reduce_arm, extention_steps); //move 80 steps
     Stepper_StartSteps();
 }
 
@@ -230,8 +251,9 @@ void Seed_ExtendArm(void)
  */
 void Seed_ReturnArm(void)
 {   
+    int ret_steps = (extention_steps * 2);
 //    Stepper_SetRate(rate);
-    Stepper_SetSteps(reduce_arm, extention_steps * 2); //move 160 steps
+    Stepper_SetSteps(extend_arm, ret_steps); //move 160 steps
 //    Stepper_SetSteps(reduce_arm, return_steps); //move 160 steps
     Stepper_StartSteps();
 }
@@ -242,7 +264,7 @@ void Seed_ReturnArm(void)
  */
 void Seed_RaiseArm(void)
 {   
-    RC_SetPulseTime(ArmServo, RAISE); //position 650
+    RC_SetPulseTime(ArmServo, RAISE);
 }
 
 /*
@@ -251,7 +273,7 @@ void Seed_RaiseArm(void)
  */
 void Seed_LowerArm(void)
 {   
-    RC_SetPulseTime(ArmServo, LOWER); //position 2000
+    RC_SetPulseTime(ArmServo, LOWER);
 }
 
 /*
@@ -260,7 +282,7 @@ void Seed_LowerArm(void)
  */
 void Seed_PushSeed(void)
 {   
-    RC_SetPulseTime(SeedServo, PUSH); //position 1000
+    RC_SetPulseTime(SeedServo, PUSH);
 }
 
 /*
@@ -269,7 +291,7 @@ void Seed_PushSeed(void)
  */
 void Seed_PullSeed(void)
 {   
-    RC_SetPulseTime(SeedServo, PULL); //position 650
+    RC_SetPulseTime(SeedServo, PULL);
 }
 
 

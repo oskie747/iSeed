@@ -156,6 +156,7 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
             printf("\n 3------ARM LOWERING");
             Seed_LowerArm();
             ES_Timer_InitTimer(CheckSoilTimer, 2000);
+//            Seed_InchArm();
         }
         else if (ThisEvent.EventType == yo_dirt){
             //dirt was detected and we want to dispense a seed now

@@ -29,13 +29,13 @@
 
 //#define IR_TEST
 //#define IR_TEST2
-#define SS_TEST
+//#define SS_TEST
 //#define SERVO_TEST
 //#define SERVO_TEST2
 //#define COMBO_TEST_IR_motor
 //#define steppa_TEST
 //#define bruh
-//#define moment
+#define moment
 
 #define Servo1 RC_PORTV03   //
 #define Servo2 RC_PORTV04   //
@@ -299,8 +299,10 @@ void main(void){
     Seed_Init();
     
     while(1){
-        Seed_Motor1Speed();
-        Seed_Motor2Speed();
+        Seed_PullSeed();
+        while(Seed_IR_ONE() >= 500){
+            Seed_PushSeed();
+        }
     }
 }
 #endif

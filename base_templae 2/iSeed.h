@@ -16,6 +16,8 @@ void Seed_Init(void);
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
 void Seed_Motor1Speed(void);
 
+void Seed_Motor1Rev(void);
+
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
 void Seed_Motor1Stop(void);
 
@@ -24,6 +26,8 @@ void Seed_Motor2Speed(void);
 
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
 void Seed_Motor2Stop(void);
+
+void Seed_Motor2Rev(void);
 
 unsigned int Seed_Soil(void);
 
