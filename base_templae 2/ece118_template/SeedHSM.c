@@ -184,6 +184,13 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
+//        else if (ThisEvent.EventType == ir1_off){
+//            //STAY ON TARGET
+//            Seed_MotorRev();
+//            nextState = ORIENT;
+//            makeTransition = TRUE;
+//            ThisEvent.EventType = ES_NO_EVENT;
+//        }
         break;
    
     case LINE_FOLLOW:
@@ -208,6 +215,13 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
+//        else if (ThisEvent.EventType == ir1_off){
+//            //STAY ON TARGET
+//            Seed_MotorSpeed();
+//            nextState = LINE_FOLLOW;
+//            makeTransition = TRUE;
+//            ThisEvent.EventType = ES_NO_EVENT;
+//        }
         break;
     
     case PLANTER:

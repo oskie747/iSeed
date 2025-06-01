@@ -300,7 +300,7 @@ void main(void){
     
     while(1){
         Seed_PullSeed();
-        while(Seed_IR_ONE() >= 500){
+        if (Seed_IR_ONE() > 500){
             Seed_PushSeed();
         }
     }

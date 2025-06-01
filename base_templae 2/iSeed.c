@@ -27,7 +27,7 @@
 
 /* ---SERVO MOTOR START--- */
 #define SeedServo RC_PORTV03    //seed dispensing servo (SMALLER ONE) 
-#define PULL 1300               //maybe the amount to dispense and load one seed
+#define PULL 1400               //maybe the amount to dispense and load one seed
 #define PUSH 650
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE)
 #define RAISE 2000
@@ -63,7 +63,8 @@
 #define DC_DIR3 PORTX05_LAT     
 #define DC_DIR4 PORTX06_LAT     
 
-#define MOVE 400                //speed at which DC motor moves
+#define MOVE 500                //speed at which DC motor moves 
+#define MOVE_MORE 600           //make motor 2 move more
 #define STOP 0                  //stop the bot
 /* ---DC MOTOR END--- */
 
@@ -73,7 +74,7 @@
  * stepper motor uses predefined pins/ports from Stepper.h
  * these are PORTZ 03-05 & 07-09
  */
-#define extention_steps 75      //amount of steps to reach each planter based on arm length [70-85]
+#define extention_steps 81      //amount of steps to reach each planter based on arm length [70-85]
 #define return_steps 160        //amount of steps to reach each origin from farthest planter
 #define extend_arm FORWARD      //ignore the naming convention I am sorry :(
 #define reduce_arm REVERSE      //ignore the naming convention I am sorry :(
@@ -167,7 +168,7 @@ void Seed_Motor1Rev(void)
 {
     DC_DIR1 = 0;
     DC_DIR2 = 1;
-    PWM_SetDutyCycle(Motor1, MOVE);
+    PWM_SetDutyCycle(Motor1, MOVE_MORE);
 }
 
 /* 
@@ -178,7 +179,7 @@ void Seed_Motor2Speed(void)
 {
     DC_DIR3 = 0;
     DC_DIR4 = 1;
-    PWM_SetDutyCycle(Motor2, MOVE);
+    PWM_SetDutyCycle(Motor2, MOVE_MORE);
 }
 // * TO BE USED IN A WHILE LOOP TO FUNCTION PROPERLY AS OF 5/22
 
@@ -239,7 +240,7 @@ unsigned int Seed_IR_TWO(void)
 void Seed_ExtendArm(void)
 {   
 //    Stepper_SetRate(rate);
-    Stepper_SetSteps(reduce_arm, extention_steps); //move 80 steps
+    Stepper_SetSteps(extend_arm, extention_steps); //move 80 steps
     Stepper_StartSteps();
 }
 
@@ -253,7 +254,7 @@ void Seed_ReturnArm(void)
 {   
     int ret_steps = (extention_steps * 2);
 //    Stepper_SetRate(rate);
-    Stepper_SetSteps(extend_arm, ret_steps); //move 160 steps
+    Stepper_SetSteps(reduce_arm, ret_steps); //move 160 steps
 //    Stepper_SetSteps(reduce_arm, return_steps); //move 160 steps
     Stepper_StartSteps();
 }

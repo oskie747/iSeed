@@ -156,7 +156,6 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
             printf("\n 3------ARM LOWERING");
             Seed_LowerArm();
             ES_Timer_InitTimer(CheckSoilTimer, 2000);
-//            Seed_InchArm();
         }
         else if (ThisEvent.EventType == yo_dirt){
             //dirt was detected and we want to dispense a seed now
@@ -169,7 +168,7 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
             //no dirt has been detected so we move on to the next row via a short timer
             printf("\n 3------NO DIRT");
             //we want to exit to above SubHSM in this case
-            ES_Timer_InitTimer(nextTimer, 600);
+            ES_Timer_InitTimer(nextTimer, 1000);
             nextState = ARM_REST;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -191,7 +190,7 @@ ES_Event RunSeedSubHSM(ES_Event ThisEvent)
 //            Seed_RaiseArm();
             
             //we want to exit to above SubHSM in this case
-            ES_Timer_InitTimer(nextTimer, 600);
+            ES_Timer_InitTimer(nextTimer, 1000);
             nextState = ARM_REST;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
