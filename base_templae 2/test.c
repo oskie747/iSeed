@@ -34,8 +34,8 @@
 //#define SERVO_TEST2
 //#define COMBO_TEST_IR_motor
 //#define steppa_TEST
-//#define bruh
-#define moment
+#define bruh
+//#define moment
 
 #define Servo1 RC_PORTV03   //
 #define Servo2 RC_PORTV04   //
@@ -271,22 +271,7 @@ void main(void){
     int j = 0;
     
     while(1){
-        for (i = 0; i < 40; i++) {
-            Seed_Motor1Speed();
-            Seed_ExtendArm();
-            Seed_RaiseArm();
-            Seed_PullSeed();
-            printf("\n IR ONE VALUE: %d", Seed_IR_ONE());
-            printf("\n IR TWO VALUE: %d", Seed_IR_TWO());
-        }
-        
-        for (j = 0; j < 40; j++) {
-            Seed_Motor2Speed();
-            Seed_ReturnArm();
-            Seed_LowerArm();
-            Seed_PushSeed();
-            printf("\n SOIL VALUE: %d", Seed_Soil());
-        }
+        printf("\n %d", Seed_Soil());
     }
 }
 #endif
@@ -299,10 +284,8 @@ void main(void){
     Seed_Init();
     
     while(1){
-        Seed_PullSeed();
-        if (Seed_IR_ONE() > 500){
-            Seed_PushSeed();
-        }
+        printf("\nIR ONE VAL: %d", Seed_IR_ONE());
+        printf("\n      IR TWO VAL: %d", Seed_IR_TWO());
     }
 }
 #endif

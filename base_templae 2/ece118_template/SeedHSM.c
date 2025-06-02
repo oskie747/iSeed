@@ -245,12 +245,12 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         //checked every planter, and reached the end of the environment
         if (ThisEvent.EventType == ES_ENTRY){
             Seed_MotorStop();
-            printf("\n 1-EPIC FREAKING SNOWMAN ON A SKATEBOARD TIME");
-            printf("\n           ^");
-            printf("\n         (  >)");
-            printf("\n     ---(  .  )---");
-            printf("\n    <__(___.___)__>");  
-            printf("\n     O           O");
+            printf("\n 1-END OF LINE");
+//            printf("\n           ^");
+//            printf("\n         (  >)");
+//            printf("\n     ---(  .  )---");
+//            printf("\n    <__(___.___)__>");  
+//            printf("\n     O           O");
         }
         else if (ThisEvent.EventType == ES_TIMEOUT && ThisEvent.EventParam == tempTimer){
             printf("\n 1-DONE ORIENTATION STAGE OF ENVIRONMENT TIME TO PLANT");

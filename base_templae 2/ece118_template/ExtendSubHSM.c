@@ -213,7 +213,7 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         }
         else if (ThisEvent.EventType == still){
             //the stepper motor has returned and now we can move on to the next column
-            ES_Timer_InitTimer(ColumnDone, 2000);
+            ES_Timer_InitTimer(ColumnDone, 1000);
             nextState = ROW1;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;

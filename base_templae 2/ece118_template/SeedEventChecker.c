@@ -121,7 +121,7 @@ uint8_t SeedSoilCheck(void) {
     uint8_t returnVal = FALSE;
     uint16_t soilVal = Seed_Soil();  // read soil sensor data
 
-    if (soilVal >= 700) { // is it in dirt?
+    if (soilVal > 700) { // is it in dirt?
 //        printf("\nhello?");
         curEvent = no_dirt;
     } else {
@@ -287,8 +287,8 @@ void main(void) {
 
             }
         }
-        Seed_Motor1Speed();
-        Seed_Motor2Speed();
+//        Seed_Motor1Speed();
+//        Seed_Motor2Speed();
         
     }
 }

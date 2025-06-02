@@ -64,7 +64,7 @@
 #define DC_DIR4 PORTX06_LAT     
 
 #define MOVE 500                //speed at which DC motor moves 
-#define MOVE_MORE 600           //make motor 2 move more
+#define MOVE_MORE 650           //make motor 2 move more
 #define STOP 0                  //stop the bot
 /* ---DC MOTOR END--- */
 
@@ -74,7 +74,7 @@
  * stepper motor uses predefined pins/ports from Stepper.h
  * these are PORTZ 03-05 & 07-09
  */
-#define extention_steps 81      //amount of steps to reach each planter based on arm length [70-85]
+#define extention_steps 70      //amount of steps to reach each planter based on arm length [70-85]
 #define return_steps 160        //amount of steps to reach each origin from farthest planter
 #define extend_arm FORWARD      //ignore the naming convention I am sorry :(
 #define reduce_arm REVERSE      //ignore the naming convention I am sorry :(
@@ -118,6 +118,8 @@ void Seed_Init(void) {
     PWM_Init();
     PWM_SetFrequency(1000);
     PWM_AddPins(Motor1 | Motor2);
+//    PWM_SetDutyCycle(Motor1, 100); // might be helpful in controlling speed of motors
+//    PWM_SetDutyCycle(Motor2, 100); 
     
     DCin1 = 0; //ensure that the IN1-4 pins on DC motor H-bridge are outputs from Uno32
     DCin2 = 0;
