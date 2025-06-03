@@ -121,7 +121,7 @@ uint8_t SeedSoilCheck(void) {
     uint8_t returnVal = FALSE;
     uint16_t soilVal = Seed_Soil();  // read soil sensor data
 
-    if (soilVal > 700) { // is it in dirt?
+    if (soilVal > 720) { // is it in dirt?
 //        printf("\nhello?");
         curEvent = no_dirt;
     } else {

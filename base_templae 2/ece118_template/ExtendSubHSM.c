@@ -130,7 +130,7 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
             // transition from the initial pseudo-state into the actual
             // initial state
             
-            ES_Timer_InitTimer(EntryTimer, 1000);
+            ES_Timer_InitTimer(EntryTimer, 700);
 //            InitSeedSubHSM();
             
             // now put the machine into the actual initial state
@@ -213,7 +213,7 @@ ES_Event RunExtendSubHSM(ES_Event ThisEvent)
         }
         else if (ThisEvent.EventType == still){
             //the stepper motor has returned and now we can move on to the next column
-            ES_Timer_InitTimer(ColumnDone, 1000);
+            ES_Timer_InitTimer(ColumnDone, 600);
             nextState = ROW1;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;

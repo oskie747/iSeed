@@ -108,7 +108,7 @@ static const char *EventNames[] = {
 #define TIMER6_RESP_FUNC PostSeedHSM
 #define TIMER7_RESP_FUNC PostSeedHSM
 #define TIMER8_RESP_FUNC PostSeedHSM
-#define TIMER9_RESP_FUNC TIMER_UNUSED
+#define TIMER9_RESP_FUNC PostSeedHSM
 #define TIMER10_RESP_FUNC TIMER_UNUSED
 #define TIMER11_RESP_FUNC TIMER_UNUSED
 #define TIMER12_RESP_FUNC TIMER_UNUSED
@@ -136,6 +136,7 @@ static const char *EventNames[] = {
 
 #define CheckSoilTimer 8
 
+#define afterTimer     9
 /****************************************************************************/
 // The maximum number of services sets an upper bound on the number of 
 // services that the framework will handle. Reasonable values are 8 and 16
