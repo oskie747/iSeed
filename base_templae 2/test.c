@@ -34,8 +34,8 @@
 //#define SERVO_TEST2
 //#define COMBO_TEST_IR_motor
 //#define steppa_TEST
-//#define bruh
-#define moment
+#define bruh
+//#define moment
 
 #define Servo1 RC_PORTV03   //
 #define Servo2 RC_PORTV04   //
@@ -267,8 +267,6 @@ void main(void){
     printf("\n lets get this test party started");
     BOARD_Init();
     Seed_Init();
-    int i = 0;
-    int j = 0;
     
     while(1){
         printf("\n %d", Seed_Soil());

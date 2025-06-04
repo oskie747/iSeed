@@ -31,14 +31,14 @@
 #define PUSH 800
 #define ArmServo RC_PORTV04     //servo to bring arm down to soil  (BIGGER ONE)
 #define RAISE 2000
-#define LOWER 650
+#define LOWER 600
 /* ---SERVO MOTOR END--- */
 
 
 /* ---SOIL SENSOR START--- */
 #define SoilSensor AD_PORTV5    //soil sensor Port
-#define AirValue 777            //value of sensor exposed to air (adjusted based on calibration)
-#define WaterValue 386          //value of sensor submerged in water (adjusted based on calibration)
+#define AirValue 777            //value of sensor exposed to air (adjusted based on calibration) [depreciated]
+#define WaterValue 386          //value of sensor submerged in water (adjusted based on calibration) [depreciated]
 /* ---SOIL SENSOR END--- */
 
 
@@ -63,9 +63,10 @@
 #define DC_DIR3 PORTX05_LAT     
 #define DC_DIR4 PORTX06_LAT     
 
-#define MOVE 400                //speed at which DC motor moves 
-#define MOVE_MORE 500           //make motor 2 move more
+#define MOVE 444                //speed at which DC motor moves 
+#define MOVE_MORE 480           //make motor 2 move more (a lil faster than the other since it is lop sided)
 #define STOP 0                  //stop the bot
+#define MOVE_BACK 450           //reverse speed {depreciated but can still be used in some scenarios}
 /* ---DC MOTOR END--- */
 
 
@@ -74,8 +75,8 @@
  * stepper motor uses predefined pins/ports from Stepper.h
  * these are PORTZ 03-05 & 07-09
  */
-#define extention_steps 74      //amount of steps to reach each planter based on arm length [70-80]
-#define return_steps 160        //amount of steps to reach each origin from farthest planter
+#define extention_steps 76      //amount of steps to reach each planter based on arm length [70-80]
+#define return_steps 155        //amount of steps to reach each origin from farthest planter
 #define extend_arm FORWARD      //ignore the naming convention I am sorry :(
 #define reduce_arm REVERSE      //ignore the naming convention I am sorry :(
 #define rate 100                //rate at which stepper motor moves
@@ -170,7 +171,7 @@ void Seed_Motor1Rev(void)
 {
     DC_DIR1 = 0;
     DC_DIR2 = 1;
-    PWM_SetDutyCycle(Motor1, MOVE);
+    PWM_SetDutyCycle(Motor1, MOVE_BACK);
 }
 
 /* 
@@ -204,7 +205,7 @@ void Seed_Motor2Rev(void)
 {
     DC_DIR3 = 1;
     DC_DIR4 = 0;
-    PWM_SetDutyCycle(Motor2, MOVE);
+    PWM_SetDutyCycle(Motor2, MOVE_BACK);
 }
 
 
@@ -256,7 +257,7 @@ void Seed_ReturnArm(void)
 {   
     int ret_steps = (extention_steps * 2);
 //    Stepper_SetRate(rate);
-    Stepper_SetSteps(reduce_arm, ret_steps + 10); //move 160 steps
+    Stepper_SetSteps(reduce_arm, ret_steps); //move ~160 steps
 //    Stepper_SetSteps(reduce_arm, return_steps); //move 160 steps
     Stepper_StartSteps();
 }
@@ -305,8 +306,7 @@ void main(void){
     
     Seed_Init();
     while(1){
-        printf("\n1");
-        Seed_LineFollow();
+        printf("\ntest section :)");
     }
 }
 #endif

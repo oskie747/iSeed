@@ -162,7 +162,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
 //            InitExtendSubHSM();
             
             // now put the machine into the actual initial state
-            nextState = ORIENT;
+            nextState = LINE_FOLLOW;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
             ;
@@ -179,7 +179,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         else if (ThisEvent.EventType == ir1_off){
             //THIS OCCURS WHEN WE ARE READY TO FOLLOW LINE AND PLANT
             Seed_MotorStop();
-            ES_Timer_InitTimer(tempTimer, 1000);
+//            ES_Timer_InitTimer(tempTimer, 1000);
             nextState = IDLE;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -196,6 +196,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
         else if (ThisEvent.EventType == ir1_off){
             //THIS OCCURS WHEN THE LINE IS NO MORE
 //            Seed_MotorStop();
+            ES_Timer_InitTimer(tempTimer, 1000);
             nextState = IDLE;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
@@ -242,7 +243,7 @@ ES_Event RunSeedHSM(ES_Event ThisEvent)
             printf("\n 1-DONE ORIENTATION STAGE OF ENVIRONMENT TIME TO PLANT");
             Seed_MotorSpeed();
 //            ES_Timer_InitTimer(afterTimer, 1000);
-            nextState = LINE_FOLLOW;
+            nextState = ORIENT;
             makeTransition = TRUE;
             ThisEvent.EventType = ES_NO_EVENT;
         }
