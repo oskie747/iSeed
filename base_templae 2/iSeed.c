@@ -64,7 +64,7 @@
 #define DC_DIR4 PORTX06_LAT     
 
 #define MOVE 444                //speed at which DC motor moves 
-#define MOVE_MORE 480           //make motor 2 move more (a lil faster than the other since it is lop sided)
+#define MOVE_MORE 485           //make motor 2 move more (a lil faster than the other since it is lop sided)
 #define STOP 0                  //stop the bot
 #define MOVE_BACK 450           //reverse speed {depreciated but can still be used in some scenarios}
 /* ---DC MOTOR END--- */
